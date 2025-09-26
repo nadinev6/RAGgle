@@ -318,8 +318,9 @@ const UrlIndexer: React.FC = () => {
               value={undefined}
               style={{
                 background: '#f0f0f0',
-                height: '8px',
-                borderRadius: '4px'
+                height: '12px',
+                borderRadius: '4px',
+                width: '100%'
               }}
               color="#007acc"
             />

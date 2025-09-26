@@ -133,19 +133,28 @@
 /* Enhanced progress bar styling */
 .k-progressbar {
   background: #f0f0f0 !important;
+  width: 100% !important;
   border-radius: 4px !important;
   overflow: hidden;
+  height: 12px !important;
 }
 
 .k-progressbar .k-progress {
   background: linear-gradient(90deg, #007acc, #005a9e) !important;
   border-radius: 4px !important;
   animation: progressPulse 2s ease-in-out infinite;
+  height: 100% !important;
 }
 
 @keyframes progressPulse {
   0%, 100% { opacity: 0.8; }
   50% { opacity: 1; }
+}
+
+.progress-container {
+  width: 100%;
+  margin-top: 1.5rem;
+  text-align: center;
 }
 
 .result-message {
@@ -164,17 +173,41 @@
   color: #2e7d32;
 }
 
-/* Enhanced success notification styling */ /*
+/* Enhanced notification styling */
 .k-notification.k-notification-success {
-  background-color: #d4edda !important;
+  background: linear-gradient(135deg, #d4edda, #c3e6cb) !important;
   border-color: #28a745 !important;
   color: #155724 !important;
+  border-radius: 6px !important;
+  box-shadow: 0 4px 12px rgba(40, 167, 69, 0.2) !important;
 }
-
 
 .k-notification.k-notification-success .k-notification-content {
   color: #155724 !important;
-}*/
+  font-weight: 500 !important;
+}
+
+.k-notification.k-notification-error {
+  background: linear-gradient(135deg, #f8d7da, #f5c6cb) !important;
+  border-color: #dc3545 !important;
+  color: #721c24 !important;
+  border-radius: 6px !important;
+  box-shadow: 0 4px 12px rgba(220, 53, 69, 0.2) !important;
+}
+
+.k-notification.k-notification-error .k-notification-content {
+  color: #721c24 !important;
+  font-weight: 500 !important;
+}
+
+/* General notification styling */
+.k-notification {
+  min-width: 300px !important;
+  max-width: 500px !important;
+  padding: 12px 16px !important;
+  margin-bottom: 8px !important;
+}
+
 .result-message.error {
   background-color: #fef7f7;
   border-color: #f44336;
