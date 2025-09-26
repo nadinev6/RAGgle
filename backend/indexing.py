@@ -187,148 +187,82 @@ class NucliaIndexer:
 
     def ask_with_json_schema(self, query: str) -> Dict[str, Any]:
         """
-        Ask Nuclia for structured product information using the /ask endpoint with JSON schema.
-        This version is robustly designed to handle multiple JSON objects (JSON Lines/ndjson)
-        in the API response.
+        DEPRECATED: This method is no longer used. Use ask_nuclia_nl and search_nuclia_resources instead.
+        """
+        logger.warning("ask_with_json_schema is deprecated. Use ask_nuclia_nl and search_nuclia_resources instead.")
+        return {"success": False, "error": "Method deprecated"}
+
+    def ask_nuclia_nl(self, query: str, resource_ids: Optional[List[str]] = None) -> Dict[str, Any]:
+        """
+        Ask Nuclia for a natural language answer, optionally constrained to specific resources.
         """
         url = f"{self.kb_base_url}/ask"
+        payload = {"query": query}
         
-        # Define the JSON schema for structured product data
-        product_schema = {
-            "title": "E-commerce Product Search Result",
-            "type": "object",
-            "properties": {
-                "products": {
-                    "type": "array",
-                    "items": {
-                        "type": "object",
-                        "properties": {
-                            "name": {"type": "string", "description": "Product name or title"},
-                            "price": {"type": "string", "description": "Product price with currency"},
-                            "description": {"type": "string", "description": "Product description"},
-                            "supplier": {"type": "string", "description": "Supplier or brand name"},
-                            "availability": {"type": "string", "description": "Stock availability status"},
-                            "imageUrl": {"type": "string", "description": "Product image URL"},
-                            "productUrl": {"type": "string", "description": "Original product page URL"},
-                            "category": {"type": "string", "description": "Product category"},
-                            "rating": {"type": "number", "description": "Product rating if available"},
-                            "features": {
-                                "type": "array",
-                                "items": {"type": "string"},
-                                "description": "Key product features or specifications"
-                            }
-                        },
-                        "required": [
-                            "name", "price", "description", "supplier", "availability",
-                            "imageUrl", "productUrl", "category", "rating", "features"
-                        ],
-                        "additionalProperties": False
-                    }
-                },
-                "summary": {"type": "string", "description": "Summary of the search results"}
-            },
-            "required": ["products"]
-        }
-        
-        payload = {
-            "query": query,
-            "answer_json_schema": product_schema
-        }
-        
-        logger.debug(f"Calling /ask with payload: {json.dumps(payload, indent=2)}")
+        if resource_ids:
+            payload["resources"] = resource_ids
         
         try:
             resp = requests.post(url, headers=self._get_search_headers(), json=payload)
             resp.raise_for_status()
             result = resp.json()
             
-            answer = result.get("answer", "")
-            citations = result.get("citations", [])
-            
-            # --- START: NEW ROBUST JSON LINES PARSING LOGIC ---
-            structured_data_list = []
-            decoder = json.JSONDecoder()
-            pos = 0
-            
-            # Trim leading whitespace from the answer
-            answer = answer.lstrip()
-
-            # Loop through the string, decoding one JSON object at a time
-            while pos < len(answer):
-                try:
-                    obj, end = decoder.raw_decode(answer[pos:])
-                    structured_data_list.append(obj)
-                    # Move position to the start of the next object
-                    pos += end
-                    # Skip whitespace/newlines between objects
-                    while pos < len(answer) and answer[pos].isspace():
-                        pos += 1
-                except json.JSONDecodeError:
-                    # Could not decode further, likely trailing text. Stop parsing.
-                    logger.warning(f"Stopped parsing JSON stream. Remainder: {answer[pos:pos+100]}...")
-                    break
-
-            # --- COMBINE PARSED OBJECTS INTO FINAL STRUCTURE ---
-            final_structured_data = {"products": [], "summary": ""}
-            if structured_data_list:
-                all_products = []
-                summaries = []
-                for item in structured_data_list:
-                    if isinstance(item, dict):
-                        # Add products from the 'products' key if it exists
-                        if 'products' in item and isinstance(item['products'], list):
-                            all_products.extend(item['products'])
-                        # If the object itself is a product, add it
-                        elif 'name' in item and 'price' in item:
-                            all_products.append(item)
-                        # Collect summaries
-                        if 'summary' in item and item['summary']:
-                            summaries.append(item['summary'])
-                
-                final_structured_data["products"] = all_products
-                final_structured_data["summary"] = " | ".join(summaries)
-
-            if not final_structured_data["products"]:
-                 logger.warning(f"Could not extract any valid product data from parsed JSON: {structured_data_list}")
-            # --- END: NEW LOGIC ---
-                    
             return {
                 "success": True,
-                "answer": answer, # The raw answer from the API
-                "structured_data": final_structured_data if final_structured_data["products"] else None,
-                "citations": citations
+                "answer": result.get("answer", ""),
+                "citations": result.get("citations", [])
             }
-            
         except requests.RequestException as e:
-            return self._handle_request_exception(e, "ask_with_json_schema")
+            return self._handle_request_exception(e, "ask_nuclia_nl")
 
-    def _extract_json_from_text(self, text: str) -> str:
+    def search_nuclia_resources(self, query: str, from_date: Optional[str] = None, to_date: Optional[str] = None) -> Dict[str, Any]:
         """
-        Extract JSON content from text that may contain conversational elements.
-        Looks for content between the first '{' and last '}' characters.
+        Search Nuclia resources with optional date filtering.
+        Returns a list of resource IDs that match the query and date criteria.
         """
-        if not text:
-            return ""
+        url = f"{self.kb_base_url}/search"
+        payload = {
+            "query": query,
+            "features": ["document"],
+            "page_number": 0,
+            "page_size": 50
+        }
+        
+        # Add date filters if provided
+        if from_date or to_date:
+            filters = {}
+            if from_date and to_date:
+                filters["created"] = {"gte": from_date, "lte": to_date}
+            elif from_date:
+                filters["created"] = {"gte": from_date}
+            elif to_date:
+                filters["created"] = {"lte": to_date}
             
-        # Find the first opening brace and last closing brace
-        first_brace = text.find('{')
-        last_brace = text.rfind('}')
+            payload["filters"] = filters
         
-        if first_brace == -1 or last_brace == -1 or first_brace >= last_brace:
-            logger.warning("No valid JSON structure found in text")
-            return ""
+        logger.debug(f"Searching Nuclia with payload: {json.dumps(payload, indent=2)}")
+        
+        try:
+            resp = requests.post(url, headers=self._get_search_headers(), json=payload)
+            resp.raise_for_status()
+            result = resp.json()
             
-        # Extract the JSON portion
-        json_content = text[first_brace:last_brace + 1]
-        
-        # Clean up common issues
-        json_content = json_content.strip()
-        
-        # Log the extracted content for debugging
-        logger.debug(f"Extracted JSON content: {json_content[:200]}...")
-        
-        return json_content
-
+            # Extract resource IDs from search results
+            resource_ids = []
+            resources = result.get("resources", {})
+            
+            for resource_id, resource_data in resources.items():
+                resource_ids.append(resource_id)
+            
+            logger.info(f"Found {len(resource_ids)} resources matching query: {query}")
+            
+            return {
+                "success": True,
+                "resource_ids": resource_ids,
+                "total_results": len(resource_ids)
+            }
+        except requests.RequestException as e:
+            return self._handle_request_exception(e, "search_nuclia_resources")
     def get_document_entities(self, document_id: str) -> Dict[str, Any]:
         url = f"{self.kb_base_url}/resource/{document_id}"
         try:
