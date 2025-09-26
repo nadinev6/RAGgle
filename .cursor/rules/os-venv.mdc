@@ -1,0 +1,5 @@
+---
+alwaysApply: true
+---
+- Always be sure that the Python virtual environment located at ./.venv (or your venv folder name) is activated first before running any terminal commands.
+- Look at the environment to determine the operating system and use the appropriate terminal activation command (e.g., source .venv/bin/activate for Unix/macOS or ./.venv/Scripts/Activate.ps1 for Windows PowerShell).

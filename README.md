@@ -1,0 +1,178 @@
+# Index, Search and Rag
+
+This project is a custom, conversational search engine powered by Nuclia's RAG (Retrieval Augmented Generation) technology and Graph Retrieval to find and extract relevant information to answer a query. It allows users to index product information from various websites, perform intelligent semantic searches, and interact with an AI-powered chat assistant to get insights about indexed results or products. The frontend is built with React and KendoReact components for structured display of products, datepicker for time-based filtering, while the backend is a Flask application that interfaces with the Nuclia API.
+
+## Features
+
+*   **URL Indexing**: Scrape and index product pages from wholesale websites (e.g., Alibaba, DHgate) into a Nuclia Knowledge Base.
+*   **Intelligent Product Search**:
+    *   AI-powered query rephrasing for enhanced semantic search.
+    *   Time-based filtering to search for products indexed within specific date ranges.
+    *   Relationship-based searches by clicking on product names or suppliers.
+    *   Structured display of search results using KendoReact Cards, including product images, prices, descriptions, and relevance scores.
+    *   Mock price trend visualization (requires further integration for real-time data).
+*   **AI Chat Assistant**: Integrated Nuclia chat widget for conversational queries and answers about indexed products.
+*   **Modern UI**: Responsive and interactive user interface built with React and KendoReact components.
+
+## Prerequisites
+
+Before running the application, ensure you have the following installed:
+
+*   **Python 3.8+**: For the backend Flask application.
+*   **pip**: Python package installer (usually comes with Python).
+*   **Node.js 18+**: For the frontend React application.
+*   **npm** or **Yarn**: Node.js package manager (npm comes with Node.js).
+
+## Setup and Installation
+
+Follow these steps to get the application running on your local machine.
+
+### 1. Environment Variables
+
+Both the backend and frontend require Nuclia API credentials and Knowledge Base IDs.
+
+Create a `.env` file in the `ecommerce-backend/` directory with the following content:
+
+```env
+NUCLIA_API_KEY="YOUR_NUCLIA_API_KEY"
+NUCLIA_KB_UID="YOUR_ECOMMERCE_KNOWLEDGE_BASE_ID"
+SUPABASE_URL="YOUR_SUPABASE_PROJECT_URL"
+SUPABASE_ANON_KEY="YOUR_SUPABASE_ANON_KEY"
+```
+
+- Replace "YOUR_NUCLIA_API_KEY" with your actual Nuclia API Key.
+- Replace NUCLIA_KB_UID with your Nuclia Knowledge Box UID.
+- Replace "YOUR_SUPABASE_PROJECT_URL" with your Supabase project URL from your dashboard.
+- Replace "YOUR_SUPABASE_ANON_KEY" with your Supabase anon key from your dashboard.
+
+### 1. Backend Setup
+
+Navigate to the backend/ directory and install the Python dependencies:
+
+```
+cd backend
+pip install -r requirements.txt
+```
+
+### 2. Environment Variables
+
+Set up your Nuclia API credentials:
+
+1. Copy the example environment file:
+   ```
+   cd backend
+   cp .env.example .env
+   ```
+
+2. Edit the `.env` file and replace the placeholder values with your actual Nuclia credentials:
+   ```env
+   NUCLIA_WRITER_API_KEY="your_actual_NUCLIA_WRITER_API_KEY"
+   NUCLIA_READER_API_KEY="your_actual_NUCLIA_READER_API_KEY"
+   NUCLIA_KB_UID="your_actual_knowledge_base_id"
+   SUPABASE_URL="your_actual_supabase_project_url"
+   SUPABASE_ANON_KEY="your_actual_supabase_anon_key"
+   ```
+
+**Where to get these values:**
+- **NUCLIA_WRITER_API_KEY**: Get this from your [Nuclia dashboard](https://nuclia.cloud/) - requires Edit API permissions for indexing content
+- **NUCLIA_READER_API_KEY**: Get this from your [Nuclia dashboard](https://nuclia.cloud/) - requires Search API permissions for searching and chat functionality
+- **NUCLIA_KB_UID**: Create a new Knowledge Base in your Nuclia dashboard and copy its ID
+- **SUPABASE_URL**: Get this from your [Supabase dashboard](https://supabase.com/dashboard) under Settings > API
+- **SUPABASE_ANON_KEY**: Get this from your [Supabase dashboard](https://supabase.com/dashboard) under Settings > API
+
+### 3. Frontend Setup
+
+Navigate to the frontend/ directory and install the Node.js dependencies:
+
+```
+cd frontend
+npm install # or npx react-scripts start
+```
+
+### Install Charting Packages 
+
+Since the project uses Chart.js for the mock price trend visualization, install the required packages:
+
+```
+npm install chart.js react-chartjs-2
+# or
+yarn add chart.js react-chartjs-2
+```
+
+### 4. Supabase Database Schema Setup
+
+After setting up your Supabase project and adding the environment variables, you need to create the database schema for product storage and price tracking.
+
+**📋 [Complete Supabase Database Setup Instructions](docs/SUPABASE_SETUP.md)**
+
+This includes:
+- Creating the `products` table for storing indexed product information
+- Creating the `price_history` table for tracking price changes over time
+- Setting up proper indexes for optimal performance
+- Optional Row Level Security configuration
+
+### 5. Running the Application
+
+You will need to run both the backend and frontend servers concurrently.
+
+#### Start the Backend Server
+
+From the backend/ directory, run the Flask application:
+
+```
+cd backend
+python app.py
+```
+
+The backend server will run on http://127.0.0.1:5000. You should see log messages indicating it's running.
+
+#### Start the Frontend Server
+
+From the frontend/ directory, start the React development server:
+
+```
+cd frontend
+npm start # or yarn start
+```
+
+The frontend application will open in your browser, usually at http://localhost:3000.
+
+## Usage
+
+Once both servers are running, you can interact with the application:
+
+1. Navigate to the Frontend: Open your web browser and go to http://localhost:3000.
+2. Index URLs:
+- Click on the "Index URLs" tab.
+- Enter a URL from a wholesale website (e.g., https://www.alibaba.com/product-detail/...) into the input field.
+- Optionally, provide a custom title.
+- Click "Index URL" to send the content to your Nuclia Knowledge Base.
+3. Product Search:
+- Click on the "Product Search" tab.
+- Enter a search query (e.g., "wireless headphones", "laptop bags") into the search bar.
+- Use the "From Date" and "To Date" date pickers to filter results by indexing date.
+- Click "Search" to view results.
+- Click on product names or suppliers in the search results to perform new searches based on those entities.
+4. AI Chat:
+- Click on the "AI Chat" tab.
+- Interact with the Nuclia chat widget to ask questions about your indexed products.
+
+## Technologies Used
+
+**Frontend:**
+- React
+- KendoReact (UI Components)
+- Axios (HTTP Client)
+- CSS
+**Backend:**
+- Flask (Web Framework)
+- Python
+- Requests (HTTP Client)
+- python-dotenv (Environment Variable Management)
+- Nuclia API
+**AI/RAG:**
+- Nuclia (for indexing, semantic search, query rephrasing, and AI chat)
+
+##
+
+This application was built for the Progress KendoReact Challenge

@@ -1,0 +1,225 @@
+/* Global styles for minimalist theme */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: white;
+  color: #333;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  max-width: none; 
+  margin: 0 auto;
+  padding: 0 25px 25px 25px;
+  background-color: white;
+}
+
+.app-header-minimal {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 30px;
+  padding: 10px 0;
+  border-bottom: 1px solid #e0e0e0;
+  position: relative;
+}
+
+.app-logo {
+  height: 40px;
+  width: auto;
+}
+
+.header-title {
+  display: flex;
+  justify-content: center; /* Centers content horizontally */
+  align-items: center; /* Centers content vertically */
+  width: 100%;
+}
+
+.header-title-container {
+  text-align: center;
+  width: 100%; 
+}
+
+.widget-label {
+  display: flex; /* Enables Flexbox */
+  align-items: center; /* Vertically aligns all children */
+  gap: 8px; /* Adds space between them */
+
+}
+
+.widget-label span {
+  margin: 0;
+  padding: 0;
+}
+
+.header-date-container {
+  margin-left: auto;
+}
+
+.date-trigger {
+  cursor: pointer;
+  padding: 8px 12px;
+  background: #f5f5f5;
+  border-radius: 6px;
+  font-size: 14px;
+  color: #666;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.date-trigger:hover {
+  background: #007acc;
+  color: white;
+}
+
+.date-popover-content {
+  padding: 15px;
+  font-size: 14px;
+  color: #333;
+  min-width: 200px;
+}
+
+
+.app-header-minimal h1 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 400;
+  color: #4b4e52;
+}
+
+.app-header-minimal .subtitle {
+  margin: 0;
+  font-size: 14px;
+  color: #999;
+  font-weight: normal;
+}
+
+.tab-selector {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  /*margin-bottom: 30px;*/
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+  padding: 0 20px 20px 20px;
+}
+
+.app-title {
+  margin: 0 0 15px 0;
+  font-size: 20px;
+  color: #333;
+  font-weight: 600;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+}
+
+.animated-icon-holder {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  border-radius: 50%;
+  color: #007acc;
+  background: transparent;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.animated-icon-holder:hover {
+  transform: scale(1.2) rotate(5deg);
+  color: #005a9e;
+  background: rgba(0, 122, 204, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 122, 204, 0.2);
+}
+
+/* TabStrip styling to match minimalist theme */
+.k-tabstrip {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  border: none;
+  background: transparent;
+}
+
+.k-tabstrip .k-tabstrip-items {
+  border-bottom: 2px solid #e0e0e0;
+  background: transparent;
+}
+
+.k-tabstrip .k-item {
+  border: none;
+  background: transparent;
+  margin-right: 10px;
+}
+
+.k-tabstrip .k-item.k-active {
+  border-bottom: 2px solid #007acc;
+  background: transparent;
+}
+
+.k-tabstrip .k-link {
+  padding: 12px 20px;
+  color: #666;
+  font-weight: 500;
+  border: none;
+  background: transparent;
+}
+
+.k-tabstrip .k-item.k-active .k-link {
+  color: #007acc;
+  font-weight: 600;
+}
+
+.k-tabstrip-content {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  border-radius: 8px;
+  padding: 30px; /* This is the key padding */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e0e0e0;
+  width: 100%;
+}
+
+/* Ensure the direct content wrapper takes full width */
+.k-tabstrip-content > div {
+  width: 100%;
+  flex: 1;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .app-container {
+    padding: 15px;
+  }
+  
+  .app-header-minimal {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  
+  .testing-page-title {
+    font-size: 24px;
+  }
+  
+  .main-content-area {
+    padding: 20px;
+  }
+}

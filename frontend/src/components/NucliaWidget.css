@@ -1,0 +1,236 @@
+.nuclia-widget-container {
+  /* Container styles removed - handled by main-content-area */
+  height: calc(100vh - 200px);
+  display: flex;
+  flex-direction: column;
+}
+
+.widget-header {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.widget-header h2 {
+  color: #333;
+  margin: 0 0 0.5rem 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.widget-header p {
+  color: #666;
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.widget-wrapper {
+  flex: 1;
+  border: 1px solid #e1e5e9;
+  border-radius: 6px;
+  overflow: hidden;
+  background: white;
+  margin-bottom: 1.5rem;
+  min-height: 400px;
+}
+
+.widget-wrapper nuclia-chat {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.widget-loading,
+.widget-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 400px;
+  text-align: center;
+  padding: 2rem;
+}
+
+.widget-loading p {
+  color: #666;
+  font-size: 1rem;
+  margin: 0;
+}
+
+.widget-error {
+  background: #fef7f7;
+  border: 1px solid #f44336;
+  border-radius: 6px;
+  color: #c62828;
+}
+
+.widget-error h4 {
+  margin: 0 0 1rem 0;
+  color: #c62828;
+}
+
+.widget-error p {
+  margin: 0 0 0.5rem 0;
+  line-height: 1.4;
+}
+
+.widget-info {
+  background: #fafafa;
+  padding: 1.5rem;
+  border-radius: 6px;
+  border: 1px solid #e9ecef;
+}
+
+.widget-info h3 {
+  margin: 0 0 1rem 0;
+  color: #333;
+  font-size: 1.1rem;
+}
+
+.widget-info ul {
+  margin: 0 0 1.5rem 0;
+  padding-left: 1.5rem;
+}
+
+.widget-info li {
+  margin-bottom: 0.5rem;
+  line-height: 1.4;
+  color: #555;
+  font-size: 0.9rem;
+}
+
+.widget-info li:last-child {
+  margin-bottom: 0;
+}
+
+.example-queries h4 {
+  margin: 0 0 0.75rem 0;
+  color: #333;
+  font-size: 1rem;
+}
+
+.query-examples {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.example-query {
+  background: #007acc;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 16px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.example-query:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 122, 204, 0.3);
+  background: #005a9e;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .nuclia-widget-container {
+    /* No padding needed */
+    height: calc(100vh - 150px);
+  }
+  
+  .widget-header h2 {
+    font-size: 1.5rem;
+  }
+  
+  .query-examples {
+    flex-direction: column;
+  }
+  
+  .example-query {
+    text-align: center;
+  }
+}
+
+/* AI Query Section Styling */
+.ai-query-input {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  border: 2px solid #e1e5e9;
+  border-radius: 0;
+  font-size: 1rem;
+  box-sizing: border-box;
+  box-sizing: border-box;
+  transition: all 0.3s ease;
+}
+
+.ai-query-input:focus {
+  outline: none;
+  border-color: #007acc;
+  box-shadow: 0 0 0 3px rgba(0, 122, 204, 0.1);
+}
+
+.ai-query-input:disabled {
+  background-color: #f5f5f5;
+  cursor: not-allowed;
+}
+
+.ai-query-button {
+  padding: 0.75rem 2rem;
+  background-color: #007acc;
+  color: white;
+  border: none;
+  border-radius: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 140px;
+}
+
+.ai-query-button:hover:not(:disabled) {
+  background-color: #005a9e;
+}
+
+.ai-query-button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+/* Container for the AI query input and button */
+.ai-query-controls {
+  display: flex;
+  gap: 0; /* Remove gap to make them appear closer/narrower */
+  margin-bottom: 1rem;
+}
+
+/* For the KendoReact Input component */
+/* Target the actual input element inside KendoReact Input for border-radius override */
+.ai-query-input .k-input-inner {
+  border-radius: 0 !important; /* Use !important to force override Kendo's default */
+  padding: 0.6rem 0.8rem; /* Adjust padding to make it visually narrower */
+}
+
+/* Ensure the KendoReact Input wrapper also has no border-radius if it applies one */
+.ai-query-input.k-input {
+  border-radius: 0 !important;
+}
+
+/* For the KendoReact Button component */
+.ai-query-button.k-button { /* Target the KendoReact button class */
+  border-radius: 0 !important; /* Use !important to force override Kendo's default */
+  padding: 0.6rem 1.2rem; /* Adjust padding to make it visually narrower */
+  min-width: auto; /* Remove min-width constraint to allow it to shrink */
+}
+
+/* Ensure the button's background color is consistent */
+.ai-query-button.k-button:hover:not(:disabled) {
+  background-color: #005a9e;
+}
+
+.ai-query-button.k-button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
