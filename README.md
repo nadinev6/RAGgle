@@ -1,17 +1,11 @@
 # Index, Search and Rag
 
-This project is a custom, conversational search engine powered by Nuclia's RAG (Retrieval Augmented Generation) technology and Graph Retrieval to find and extract relevant information to answer a query. It allows users to index product information from various websites, perform intelligent semantic searches, and interact with an AI-powered chat assistant to get insights about indexed results or products. The frontend is built with React and KendoReact components for structured display of products, datepicker for time-based filtering, while the backend is a Flask application that interfaces with the Nuclia API.
+This project is a custom, conversational search engine powered by Nuclia's RAG (Retrieval Augmented Generation) technology. It allows users to index content from various websites and interact with an AI-powered chat assistant to get insights about the indexed content. Users can also filter their indexed URL history by date range for better organization. The frontend is built with React and KendoReact components, while the backend is a Flask application that interfaces with the Nuclia API.
 
 ## Features
 
-*   **URL Indexing**: Scrape and index product pages from wholesale websites (e.g., Alibaba, DHgate) into a Nuclia Knowledge Base.
-*   **Intelligent Product Search**:
-    *   AI-powered query rephrasing for enhanced semantic search.
-    *   Time-based filtering to search for products indexed within specific date ranges.
-    *   Relationship-based searches by clicking on product names or suppliers.
-    *   Structured display of search results using KendoReact Cards, including product images, prices, descriptions, and relevance scores.
-    *   Mock price trend visualization (requires further integration for real-time data).
-*   **AI Chat Assistant**: Integrated Nuclia chat widget for conversational queries and answers about indexed products.
+*   **URL Indexing**: Index content from various websites into a Nuclia Knowledge Base with date-based filtering of the indexed URL history.
+*   **AI Chat Assistant**: Integrated Nuclia chat widget for conversational queries and answers about indexed content.
 *   **Modern UI**: Responsive and interactive user interface built with React and KendoReact components.
 
 ## Prerequisites
@@ -89,15 +83,7 @@ cd frontend
 npm install # or npx react-scripts start
 ```
 
-### Install Charting Packages 
 
-Since the project uses Chart.js for the mock price trend visualization, install the required packages:
-
-```
-npm install chart.js react-chartjs-2
-# or
-yarn add chart.js react-chartjs-2
-```
 
 ### 4. Supabase Database Schema Setup
 
@@ -144,18 +130,13 @@ Once both servers are running, you can interact with the application:
 1. Navigate to the Frontend: Open your web browser and go to http://localhost:3000.
 2. Index URLs:
 - Click on the "Index URLs" tab.
-- Enter a URL from a wholesale website (e.g., https://www.alibaba.com/product-detail/...) into the input field.
+- Enter a URL from any website into the input field.
 - Optionally, provide a custom title.
 - Click "Index URL" to send the content to your Nuclia Knowledge Base.
-3. Product Search:
-- Click on the "Product Search" tab.
-- Enter a search query (e.g., "wireless headphones", "laptop bags") into the search bar.
-- Use the "From Date" and "To Date" date pickers to filter results by indexing date.
-- Click "Search" to view results.
-- Click on product names or suppliers in the search results to perform new searches based on those entities.
-4. AI Chat:
+- Use the date range filters to view indexed URLs from specific time periods.
+3. AI Chat:
 - Click on the "AI Chat" tab.
-- Interact with the Nuclia chat widget to ask questions about your indexed products.
+- Interact with the Nuclia chat widget to ask questions about your indexed content.
 
 ## Technologies Used
 
