@@ -192,15 +192,12 @@ class NucliaIndexer:
         logger.warning("ask_with_json_schema is deprecated. Use ask_nuclia_nl and search_nuclia_resources instead.")
         return {"success": False, "error": "Method deprecated"}
 
-    def ask_nuclia_nl(self, query: str, resource_ids: Optional[List[str]] = None) -> Dict[str, Any]:
+    def ask_nuclia_nl(self, query: str) -> Dict[str, Any]:
         """
-        Ask Nuclia for a natural language answer, optionally constrained to specific resources.
+        Ask Nuclia for a natural language answer.
         """
         url = f"{self.kb_base_url}/ask"
         payload = {"query": query}
-        
-        if resource_ids:
-            payload["resources"] = resource_ids
         
         try:
             resp = requests.post(url, headers=self._get_search_headers(), json=payload)
@@ -215,55 +212,6 @@ class NucliaIndexer:
         except requests.RequestException as e:
             return self._handle_request_exception(e, "ask_nuclia_nl")
 
-    def search_nuclia_resources(self, query: str, from_date: Optional[str] = None, to_date: Optional[str] = None) -> Dict[str, Any]:
-        """
-        Search Nuclia resources with optional date filtering.
-        Returns a list of resource IDs that match the query and date criteria.
-        """
-        url = f"{self.kb_base_url}/search"
-        payload = {
-            "query": query,
-            "features": ["document"],
-            "page_number": 0,
-            "page_size": 50
-        }
-        
-        # Add date filters if provided
-        if from_date or to_date:
-            filters = {}
-            if from_date and to_date:
-                filters["created"] = {"gte": from_date, "lte": to_date}
-            elif from_date:
-                filters["created"] = {"gte": from_date}
-            elif to_date:
-                filters["created"] = {"lte": to_date}
-            
-            payload["filters"] = filters
-        
-        logger.debug(f"Searching Nuclia with payload: {json.dumps(payload, indent=2)}")
-        
-        try:
-            resp = requests.post(url, headers=self._get_search_headers(), json=payload)
-            resp.raise_for_status()
-            result = resp.json()
-            
-            # Extract resource IDs from search results
-            resource_ids = []
-            resources = result.get("resources", {})
-            
-            for resource_id, resource_data in resources.items():
-                resource_ids.append(resource_id)
-            
-            logger.info(f"Found {len(resource_ids)} resources matching query: {query}")
-            
-            return {
-                "success": True,
-                "resource_ids": resource_ids,
-                "total_results": len(resource_ids)
-            }
-        except requests.RequestException as e:
-            return self._handle_request_exception(e, "search_nuclia_resources")
-    def get_document_entities(self, document_id: str) -> Dict[str, Any]:
         url = f"{self.kb_base_url}/resource/{document_id}"
         try:
             resp = requests.get(url, headers=self._get_search_headers())

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '@progress/kendo-react-buttons';
 import { Switch } from '@progress/kendo-react-inputs';
+import { DatePicker } from '@progress/kendo-react-dateinputs';
 import { ProgressBar } from '@progress/kendo-react-progressbars';
 import { Tooltip } from '@progress/kendo-react-tooltip';
 import { Notification, NotificationGroup } from '@progress/kendo-react-notification';
@@ -18,6 +19,7 @@ interface IndexedItem {
   url: string;
   title?: string;
   document_id?: string;
+  indexed_at: string;
 }
 
 interface NotificationItem {
@@ -43,6 +45,8 @@ const UrlIndexer: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [indexedUrls, setIndexedUrls] = useState<IndexedItem[]>([]);
   const [notifications, setNotifications] = useState<NotificationItem[]>([]);
+  const [filterFromDate, setFilterFromDate] = useState<Date | null>(null);
+  const [filterToDate, setFilterToDate] = useState<Date | null>(null);
   
   // 1. NEW STATE: State to control the dynamic Tooltip
   const [tooltipState, setTooltipState] = useState<TooltipState>({
@@ -139,6 +143,45 @@ const UrlIndexer: React.FC = () => {
     });
   };
 
+  // Helper functions for date filtering
+  const handleSetFilterDateRange = (days: number) => {
+    const today = new Date();
+    const pastDate = new Date();
+    pastDate.setDate(today.getDate() - days);
+    
+    setFilterFromDate(pastDate);
+    setFilterToDate(today);
+  };
+
+  const handleClearFilterDates = () => {
+    setFilterFromDate(null);
+    setFilterToDate(null);
+  };
+
+  // Filter indexed URLs based on date range
+  const filteredIndexedUrls = React.useMemo(() => {
+    if (!filterFromDate && !filterToDate) {
+      return indexedUrls;
+    }
+
+    return indexedUrls.filter(item => {
+      const itemDate = new Date(item.indexed_at);
+      
+      if (filterFromDate && itemDate < filterFromDate) {
+        return false;
+      }
+      
+      if (filterToDate) {
+        const endOfDay = new Date(filterToDate);
+        endOfDay.setHours(23, 59, 59, 999);
+        if (itemDate > endOfDay) {
+          return false;
+        }
+      }
+      
+      return true;
+    });
+  }, [indexedUrls, filterFromDate, filterToDate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -173,7 +216,8 @@ const UrlIndexer: React.FC = () => {
         const newItem: IndexedItem = {
           url: url.trim(),
           title: title.trim() || undefined,
-          document_id: data.document_id
+          document_id: data.document_id,
+          indexed_at: new Date().toISOString()
         };
         setIndexedUrls(prev => [...prev, newItem]);
         setUrl('');
@@ -331,29 +375,88 @@ const UrlIndexer: React.FC = () => {
       {indexedUrls.length > 0 && (
         <div className="indexed-history">
           <div className="history-header">
-            <h3>Recently Indexed URLs ({indexedUrls.length})</h3>
+            <h3>Recently Indexed URLs ({filteredIndexedUrls.length} of {indexedUrls.length})</h3>
             <Button onClick={handleClearHistory} className="clear-button">
               Clear History
             </Button>
           </div>
-          <div className="url-list">
-            {indexedUrls.map((indexedUrl, index) => (
-              <div key={index} className="url-item">
-                <span className="url-text">{indexedUrl.url}</span>
-                
-                {/* 4. ATTACH HANDLERS: Handlers attached to the link element */}
-                <a 
-                  href={indexedUrl.url} 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="visit-link"
-                  onMouseEnter={(e) => handleMouseEnter(e, indexedUrl)}
-                  onMouseLeave={handleMouseLeave}
-                >
-                  Visit
-                </a>
+          
+          {/* Date Range Filter Section */}
+          <div className="date-filter-section">
+            <h4>Filter by Date Range</h4>
+            <div className="date-filter-controls">
+              <div className="date-picker-group">
+                <label>From:</label>
+                <DatePicker
+                  value={filterFromDate}
+                  onChange={(e) => setFilterFromDate(e.target.value)}
+                  style={{ width: '140px' }}
+                />
               </div>
-            ))}
+              
+              <div className="date-picker-group">
+                <label>To:</label>
+                <DatePicker
+                  value={filterToDate}
+                  onChange={(e) => setFilterToDate(e.target.value)}
+                  style={{ width: '140px' }}
+                />
+              </div>
+              
+              <div className="date-filter-buttons">
+                <Button
+                  onClick={() => handleSetFilterDateRange(7)}
+                  className="date-filter-btn"
+                >
+                  Last 7 days
+                </Button>
+                <Button
+                  onClick={() => handleSetFilterDateRange(30)}
+                  className="date-filter-btn"
+                >
+                  Last 30 days
+                </Button>
+                <Button
+                  onClick={handleClearFilterDates}
+                  className="date-filter-btn clear-filter-btn"
+                >
+                  Clear Filters
+                </Button>
+              </div>
+            </div>
+          </div>
+          
+          <div className="url-list">
+            {filteredIndexedUrls.length > 0 ? (
+              filteredIndexedUrls.map((indexedUrl, index) => (
+                <div key={index} className="url-item">
+                  <div className="url-content">
+                    <span className="url-text">{indexedUrl.url}</span>
+                    <span className="url-date">
+                      {new Date(indexedUrl.indexed_at).toLocaleDateString()}
+                    </span>
+                  </div>
+                  
+                  {/* 4. ATTACH HANDLERS: Handlers attached to the link element */}
+                  <a 
+                    href={indexedUrl.url} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="visit-link"
+                    onMouseEnter={(e) => handleMouseEnter(e, indexedUrl)}
+                    onMouseLeave={handleMouseLeave}
+                  >
+                    Visit
+                  </a>
+                </div>
+              ))
+            ) : (
+              <div key={index} className="url-item">
+                <span className="no-results-text">
+                  No URLs found for the selected date range.
+                </span>
+              </div>
+            )}
           </div>
         </div>
       )}
