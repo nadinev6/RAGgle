@@ -125,7 +125,6 @@ const NucliaWidget: React.FC = () => {
             <li>"books by Stephen King"</li>
             <li>"electronics under $100"</li>
             <li>"products from Barnes & Noble"</li>
-            <li>"wireless headphones"</li>
           </ul>
         </div>
       </div>
