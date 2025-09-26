@@ -136,20 +136,34 @@
 
 /* Enhanced progress bar styling */
 .k-progressbar {
-  background: #f0f0f0 !important;
-  width: 100% !important;
-  border-radius: 8px !important;
+  background: #f0f0f0;
+  width: 100%;
+  border-radius: 8px;
   overflow: hidden;
-  height: 16px !important;
-  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+  height: 16px;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .k-progressbar .k-progress {
-  background: linear-gradient(90deg, #007acc, #005a9e) !important;
-  border-radius: 8px !important;
+  background: linear-gradient(90deg, #007acc, #005a9e);
+  border-radius: 8px;
   animation: progressPulse 2s ease-in-out infinite;
-  height: 100% !important;
-  transition: width 0.3s ease !important;
+  height: 100%;
+  transition: width 0.3s ease;
+}
+
+/* Ensure KendoReact progress bar shows indeterminate animation */
+.k-progressbar[aria-valuenow="0"] .k-progress,
+.k-progressbar:not([aria-valuenow]) .k-progress {
+  width: 100%;
+  background: linear-gradient(90deg, #007acc 0%, #005a9e 50%, #007acc 100%);
+  background-size: 200% 100%;
+  animation: progressSlide 2s ease-in-out infinite;
+}
+
+@keyframes progressSlide {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
 }
 
 @keyframes progressPulse {

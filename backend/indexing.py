@@ -302,6 +302,33 @@ class NucliaIndexer:
         except requests.RequestException as e:
             return self._handle_request_exception(e, "ask_with_json_schema")
 
+    def _extract_json_from_text(self, text: str) -> str:
+        """
+        Extract JSON content from text that may contain conversational elements.
+        Looks for content between the first '{' and last '}' characters.
+        """
+        if not text:
+            return ""
+            
+        # Find the first opening brace and last closing brace
+        first_brace = text.find('{')
+        last_brace = text.rfind('}')
+        
+        if first_brace == -1 or last_brace == -1 or first_brace >= last_brace:
+            logger.warning("No valid JSON structure found in text")
+            return ""
+            
+        # Extract the JSON portion
+        json_content = text[first_brace:last_brace + 1]
+        
+        # Clean up common issues
+        json_content = json_content.strip()
+        
+        # Log the extracted content for debugging
+        logger.debug(f"Extracted JSON content: {json_content[:200]}...")
+        
+        return json_content
+
     def get_document_entities(self, document_id: str) -> Dict[str, Any]:
         url = f"{self.kb_base_url}/resource/{document_id}"
         try:
