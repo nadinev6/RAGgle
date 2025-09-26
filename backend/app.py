@@ -124,7 +124,7 @@ def index_url():
             return jsonify({"success": False, "error": "Failed to get document_id from Nuclia"}), 500
             
         # Step 2: In parallel, fetch the content to extract metadata yourself
-        response = requests.get(url, headers={'User-Agent': 'Mozilla/5.0'}, timeout=20)
+        response = requests.get(url, headers={'User-Agent': 'Mozilla/5.0'}, timeout=60)
         response.raise_for_status()
         content = response.text
 
