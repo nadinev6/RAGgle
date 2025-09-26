@@ -108,6 +108,7 @@ def index_url():
     """
     data = request.get_json()
     url = data.get('url')
+    is_product_page = data.get('is_product_page', False)
     if not url:
         return jsonify({"success": False, "error": "URL is required"}), 400
 
@@ -153,6 +154,8 @@ def index_url():
                 "availability": extracted_details.get("availability", "Unknown"),
                 "product_url": extracted_details.get("productUrl", url),
                 "last_updated": datetime.now().isoformat(),
+                "product_type": "product" if is_product_page else "generic",
+                "has_metadata": is_product_page and bool(extracted_details.get("imageUrl"))
             }
             # Add price history logic if price can be parsed
             price_match = re.search(r'[\d,]+\.?\d*', product_data["price_text"].replace(',', ''))

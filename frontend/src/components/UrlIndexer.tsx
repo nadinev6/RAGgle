@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '@progress/kendo-react-buttons';
+import { Switch } from '@progress/kendo-react-inputs';
 import { ProgressBar } from '@progress/kendo-react-progressbars';
 import { Tooltip } from '@progress/kendo-react-tooltip';
 import { Notification, NotificationGroup } from '@progress/kendo-react-notification';
@@ -38,6 +39,7 @@ const STORAGE_KEY = 'nuclia-indexed-urls';
 const UrlIndexer: React.FC = () => {
   const [url, setUrl] = useState('');
   const [title, setTitle] = useState('');
+  const [isProductPage, setIsProductPage] = useState(false);
   const [loading, setLoading] = useState(false);
   const [indexedUrls, setIndexedUrls] = useState<IndexedItem[]>([]);
   const [notifications, setNotifications] = useState<NotificationItem[]>([]);
@@ -161,7 +163,8 @@ const UrlIndexer: React.FC = () => {
     try {
       const response = await axios.post('http://127.0.0.1:5000/index-url', {
         url: url.trim(),
-        title: title.trim() || undefined
+        title: title.trim() || undefined,
+        is_product_page: isProductPage
       });
 
       const data = response.data;
@@ -175,6 +178,7 @@ const UrlIndexer: React.FC = () => {
         setIndexedUrls(prev => [...prev, newItem]);
         setUrl('');
         setTitle('');
+        setIsProductPage(false);
         
         // Success notification with document ID
         const successMessage = data.document_id 
@@ -286,6 +290,18 @@ const UrlIndexer: React.FC = () => {
           />
         </div>
 
+        <div className="form-group">
+          <label className="checkbox-label">
+            <Switch
+              checked={isProductPage}
+              onChange={(e) => setIsProductPage(e.target.checked)}
+              disabled={loading}
+              className="product-switch"
+            />
+            <span>This is a product page (extract product details)</span>
+          </label>
+        </div>
+
         <div className="form-actions">
           <Button
             type="submit"
@@ -298,7 +314,15 @@ const UrlIndexer: React.FC = () => {
         
         {loading && (
           <div className="progress-container">
-            <ProgressBar />
+            <ProgressBar 
+              value={undefined}
+              style={{
+                background: '#f0f0f0',
+                height: '8px',
+                borderRadius: '4px'
+              }}
+              color="#007acc"
+            />
             <p className="progress-text">Processing URL and extracting content...</p>
           </div>
         )}

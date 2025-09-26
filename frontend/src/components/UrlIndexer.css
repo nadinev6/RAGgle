@@ -89,6 +89,23 @@
   cursor: not-allowed;
 }
 
+.product-switch {
+  margin: 0;
+}
+
+.product-switch .k-switch-track {
+  background-color: #e0e0e0;
+}
+
+.product-switch.k-switch-on .k-switch-track {
+  background-color: #007acc;
+}
+
+.product-switch .k-switch-thumb {
+  background-color: white;
+  border: 1px solid #ccc;
+}
+
 .form-actions {
   text-align: center;
 }
@@ -111,6 +128,24 @@
   color: #666;
   font-size: 0.9rem;
   font-style: italic;
+}
+
+/* Enhanced progress bar styling */
+.k-progressbar {
+  background: #f0f0f0 !important;
+  border-radius: 4px !important;
+  overflow: hidden;
+}
+
+.k-progressbar .k-progress {
+  background: linear-gradient(90deg, #007acc, #005a9e) !important;
+  border-radius: 4px !important;
+  animation: progressPulse 2s ease-in-out infinite;
+}
+
+@keyframes progressPulse {
+  0%, 100% { opacity: 0.8; }
+  50% { opacity: 1; }
 }
 
 .result-message {

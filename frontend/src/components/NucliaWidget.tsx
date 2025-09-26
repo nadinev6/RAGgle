@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Button } from '@progress/kendo-react-buttons';
-import { Input } from '@progress/kendo-react-inputs';
+import { Input, Switch } from '@progress/kendo-react-inputs';
 import axios from 'axios';
 import KendoProductCardComponent from './KendoProductCardComponent.tsx'; 
 import './NucliaWidget.css';
@@ -53,6 +53,7 @@ const NucliaWidget: React.FC = () => {
   const [userQuery, setUserQuery] = useState('');
   const [askLoading, setAskLoading] = useState(false);
   const [askResponse, setAskResponse] = useState<AskResponse | null>(null);
+  const [displayImageOnly, setDisplayImageOnly] = useState(false);
 
   useEffect(() => {
     // Fetch Nuclia configuration from backend
@@ -169,6 +170,15 @@ const NucliaWidget: React.FC = () => {
       {/* AI-Powered Product Query Section */}
       <div className="ai-query-section" style={{ marginBottom: '2rem' }}>
         <h3 style={{ marginBottom: '1rem', color: '#333' }}>Ask About Your Products</h3>
+        
+        <div style={{ marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <Switch
+            checked={displayImageOnly}
+            onChange={(e) => setDisplayImageOnly(e.target.checked)}
+          />
+          <span style={{ fontSize: '0.9rem', color: '#666' }}>Show images only</span>
+        </div>
+        
         <div className="ai-query-controls">
           <Input
             onChange={(e) => setUserQuery(e.target.value)}
@@ -218,6 +228,7 @@ const NucliaWidget: React.FC = () => {
                         <KendoProductCardComponent
                           key={index}
                           product={product}
+                          displayMode={displayImageOnly ? "imageOnly" : "full"}
                         />
                       ))}
                     </div>

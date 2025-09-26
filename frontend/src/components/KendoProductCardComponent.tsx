@@ -17,11 +17,13 @@ interface ProductData {
 
 interface KendoProductCardProps {
   product: ProductData;
+  displayMode?: "full" | "imageOnly";
   onViewOriginal?: (url: string) => void;
 }
 
 const KendoProductCardComponent: React.FC<KendoProductCardProps> = ({ 
   product, 
+  displayMode = "full",
   onViewOriginal 
 }) => {
   const handleViewOriginal = () => {
@@ -32,6 +34,51 @@ const KendoProductCardComponent: React.FC<KendoProductCardProps> = ({
     }
   };
 
+  // Image-only display mode
+  if (displayMode === "imageOnly") {
+    return (
+      <Card style={{ margin: '1rem 0', maxWidth: '300px' }}>
+        <CardBody>
+          <div style={{ textAlign: 'center', marginBottom: '1rem' }}>
+            <img
+              src={product.imageUrl || 'https://via.placeholder.com/300x200?text=No+Image'}
+              alt={product.name || 'Product Image'}
+              style={{
+                maxWidth: '100%',
+                height: '250px',
+                objectFit: 'cover',
+                borderRadius: '4px'
+              }}
+              onError={(e) => {
+                (e.target as HTMLImageElement).src = 'https://via.placeholder.com/300x200?text=Image+Error';
+              }}
+            />
+          </div>
+        </CardBody>
+        
+        {product.productUrl && (
+          <CardActions style={{ padding: '1rem', borderTop: '1px solid #e9ecef' }}>
+            <Button
+              onClick={handleViewOriginal}
+              style={{
+                backgroundColor: '#007acc',
+                color: 'white',
+                border: 'none',
+                padding: '0.5rem 1rem',
+                borderRadius: '4px',
+                fontSize: '0.9rem',
+                width: '100%'
+              }}
+            >
+              View Original Product
+            </Button>
+          </CardActions>
+        )}
+      </Card>
+    );
+  }
+
+  // Full display mode (existing functionality)
   return (
     <Card style={{ margin: '1rem 0', maxWidth: '400px' }}>
       <CardBody>

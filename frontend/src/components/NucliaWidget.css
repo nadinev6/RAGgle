@@ -199,6 +199,23 @@
   cursor: not-allowed;
 }
 
+/* Display mode switch styling */
+.k-switch {
+  margin: 0;
+}
+
+.k-switch .k-switch-track {
+  background-color: #e0e0e0;
+}
+
+.k-switch.k-switch-on .k-switch-track {
+  background-color: #007acc;
+}
+
+.k-switch .k-switch-thumb {
+  background-color: white;
+  border: 1px solid #ccc;
+}
 /* Container for the AI query input and button */
 .ai-query-controls {
   display: flex;
