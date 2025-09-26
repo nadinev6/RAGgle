@@ -360,6 +360,11 @@ const UrlIndexer: React.FC = () => {
           <div className="progress-container">
             <ProgressBar 
               value={undefined}
+              progressStyle={{
+                background: 'linear-gradient(90deg, #007acc 0%, #005a9e 50%, #007acc 100%)',
+                backgroundSize: '200% 100%',
+                animation: 'progressSlide 2s ease-in-out infinite'
+              }}
               style={{
                 background: '#f0f0f0',
                 height: '16px',
