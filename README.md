@@ -1,4 +1,4 @@
-# Index, Search and Rag
+# RAGgle
 
 This project is a custom, conversational search engine powered by Nuclia's RAG (Retrieval Augmented Generation) technology. It allows users to index content from various websites and interact with an AI-powered chat assistant to get insights about the indexed content. Users can also filter their indexed URL history by date range for better organization. The frontend is built with React and KendoReact components, while the backend is a Flask application that interfaces with the Nuclia API.
 
