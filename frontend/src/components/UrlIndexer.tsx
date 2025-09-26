@@ -298,7 +298,7 @@ const UrlIndexer: React.FC = () => {
               disabled={loading}
               className="product-switch"
             />
-            <span>This is a product page (extract product details)</span>
+            <span> Product</span>
           </label>
         </div>
 
