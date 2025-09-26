@@ -336,6 +336,28 @@ class NucliaIndexer:
         except requests.RequestException as e:
             return self._handle_request_exception(e, "get_resource_by_id")
 
+    def _flatten_nuclia_usermetadata(self, nuclia_metadata: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Flatten Nuclia's nested usermetadata structure.
+        Converts {"fields": {"key": {"value": "value"}}} to {"key": "value"}
+        """
+        flattened = {}
+        if not nuclia_metadata or not isinstance(nuclia_metadata, dict):
+            return flattened
+            
+        fields = nuclia_metadata.get("fields", {})
+        if not isinstance(fields, dict):
+            return flattened
+            
+        for key, value_obj in fields.items():
+            if isinstance(value_obj, dict) and "value" in value_obj:
+                flattened[key] = value_obj["value"]
+            else:
+                # Fallback for unexpected structure
+                flattened[key] = str(value_obj)
+                
+        return flattened
+
     def list_resources(self, limit: int = 100) -> Dict[str, Any]:
         url = f"{self.kb_base_url}/resources"
         params = {"page": 0, "size": limit}

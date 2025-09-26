@@ -103,7 +103,7 @@ def ask_product_details():
 @app.route('/index-url', methods=['POST'])
 def index_url():
     """
-    Indexes a URL, extracts product metadata, patches the Nuclia resource,
+    Indexes a URL using Nuclia, retrieves the extracted metadata,
     and stores the product data in Supabase.
     """
     data = request.get_json()
@@ -113,7 +113,7 @@ def index_url():
         return jsonify({"success": False, "error": "URL is required"}), 400
 
     try:
-        # Step 1: Let Nuclia ingest the URL first. This is fast and gets a document_id.
+        # Step 1: Let Nuclia ingest the URL
         result = indexer.upload_from_url(url=url, title=f"Product from {url}")
         
         if not result.get("success"):
@@ -123,59 +123,49 @@ def index_url():
         if not document_id:
             return jsonify({"success": False, "error": "Failed to get document_id from Nuclia"}), 500
             
-        # Step 2: In parallel, fetch the content to extract metadata yourself
-        response = requests.get(url, headers={
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-            'Accept-Language': 'en-US,en;q=0.5',
-            'Accept-Encoding': 'gzip, deflate',
-            'Connection': 'keep-alive',
-            'Upgrade-Insecure-Requests': '1'
-        }, timeout=60)
-        response.raise_for_status()
-        content = response.text
-
-        # Step 3: Extract product details from the content
-        extraction_function = extract_bn_product_details_from_content if "barnesandnoble.com" in url.lower() else extract_product_details_from_content
-        extracted_details = extraction_function(content, url)
+        # Step 2: Retrieve the resource from Nuclia to get extracted metadata
+        resource_result = indexer.get_resource_by_id(document_id)
+        extracted_details = {}
         
-        # Step 4: Patch the Nuclia resource with the structured metadata
-        patch_result = indexer.patch_resource(document_id, extracted_details)
-        if patch_result["success"]:
-            logger.info(f"Successfully patched resource {document_id} with metadata.")
-            result["metadata_patch_success"] = True
+        if resource_result.get("success"):
+            resource_data = resource_result.get("resource", {})
+            usermetadata = resource_data.get("usermetadata", {})
+            
+            # Flatten the Nuclia usermetadata structure
+            extracted_details = indexer._flatten_nuclia_usermetadata(usermetadata)
+            logger.info(f"Retrieved metadata from Nuclia for document {document_id}")
         else:
-            logger.warning(f"Failed to patch resource {document_id}: {patch_result.get('error')}")
-            result["metadata_patch_success"] = False
+            logger.warning(f"Failed to retrieve resource {document_id} from Nuclia: {resource_result.get('error')}")
 
-        # Step 5: Store the final product data in Supabase
+        # Step 3: Store the product data in Supabase
         if supabase:
+            # Set default values if not extracted
+            extracted_details.setdefault("name", "Unknown Product")
+            extracted_details.setdefault("price", "Price not available")
+            extracted_details.setdefault("imageUrl", "")
+            extracted_details.setdefault("description", "")
+            extracted_details.setdefault("supplier", "Unknown Supplier")
+            extracted_details.setdefault("availability", "Unknown")
+            
             product_data = {
                 "nuclia_document_id": document_id,
                 "name": extracted_details.get("name", "Unknown Product"),
-                "author": extracted_details.get("author", "Unknown Author"),
                 "price_text": extracted_details.get("price", "Price not available"),
                 "image_url": extracted_details.get("imageUrl", ""),
                 "description": extracted_details.get("description", ""),
                 "supplier": extracted_details.get("supplier", "Unknown Supplier"),
                 "availability": extracted_details.get("availability", "Unknown"),
-                "product_url": extracted_details.get("productUrl", url),
+                "product_url": url,
                 "last_updated": datetime.now().isoformat(),
                 "product_type": "product" if is_product_page else "generic",
-                "has_metadata": is_product_page and bool(extracted_details.get("imageUrl"))
+                "has_metadata": bool(extracted_details.get("imageUrl"))
             }
-            # Add price history logic if price can be parsed
-            price_match = re.search(r'[\d,]+\.?\d*', product_data["price_text"].replace(',', ''))
-            if price_match:
-                try:
-                    price_value = float(price_match.group())
-                    # You would need a separate call to store price history after getting the product ID
-                except ValueError:
-                    pass
 
             supabase_result = supabase.table("products").upsert(product_data, on_conflict="nuclia_document_id").execute()
             logger.info(f"Upserted product data to Supabase for doc {document_id}")
-            result["supabase_result"] = str(supabase_result)
+            result["supabase_success"] = True
+        else:
+            result["supabase_success"] = False
         
         return jsonify(result)
             
