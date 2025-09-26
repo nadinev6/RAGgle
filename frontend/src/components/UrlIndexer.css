@@ -201,6 +201,15 @@
   font-weight: 500 !important;
 }
 
+/* Fix success notification icon color */
+.k-notification.k-notification-success .k-icon,
+.k-notification.k-notification-success .k-svg-icon,
+.k-notification.k-notification-success .k-notification-actions .k-button .k-icon,
+.k-notification.k-notification-success .k-notification-actions .k-button .k-svg-icon {
+  color: #155724 !important;
+  fill: #155724 !important;
+}
+
 .k-notification.k-notification-error {
   background: linear-gradient(135deg, #f8d7da, #f5c6cb) !important;
   border-color: #dc3545 !important;

@@ -322,7 +322,6 @@ const UrlIndexer: React.FC = () => {
                 borderRadius: '4px',
                 width: '100%'
               }}
-              color="#007acc"
             />
             <p className="progress-text">Processing URL and extracting content...</p>
           </div>
