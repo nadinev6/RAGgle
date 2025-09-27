@@ -177,7 +177,7 @@ function App() {
           knowledgebox={nucliaConfig.knowledgebox || ''}
           authtoken={nucliaConfig.authtoken || ''}
           zone={nucliaConfig.zone || 'aws-eu-central-1-1'}
-          features="answers,contextImages,rephrase,filter,suggestions,autocompleteFromNERs,citations,hideResults,displayMetadata,relations,navigateToLink,noChatHistory"
+          features="answers,contextImages,rephrase,filter,suggestions,autocompleteFromNERs,citations,hideResults,displayMetadata,relations,navigateToLink,noChatHistory,imageUpload"
           filters="labels"
           rag_strategies="neighbouring_paragraphs|2|2"
           rag_images_strategies="page_image|2"
