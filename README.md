@@ -6,7 +6,7 @@ This project is a custom, conversational search engine powered by Nuclia's RAG (
 
 *   **URL Indexing**: Index content from various websites into a Nuclia Knowledge Base with date-based filtering of the indexed URL history.
 *   **AI Chat Assistant**: Integrated Nuclia chat widget for conversational queries and answers about indexed content.
-*   **Modern UI**: Responsive and interactive user interface built with React and KendoReact components.
+*   **Minimalist UI**: Responsive and interactive user interface built with React and KendoReact components.
 
 ## Prerequisites
 
