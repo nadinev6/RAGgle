@@ -147,7 +147,7 @@ function App() {
           <FaComments />
           </Icon>
           <span style={{ marginLeft: '8px', fontSize: '16px', fontWeight: '500' }}>
-            RAGle
+             
           </span>
         </div>
       </h2>
