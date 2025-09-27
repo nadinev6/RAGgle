@@ -45,7 +45,7 @@ const NucliaWidget: React.FC<NucliaWidgetProps> = ({ config, loading }) => {
           knowledgebox="f3cfbf07-9e71-45e2-8648-94073a4ce56d"
           authtoken={config.authtoken || ''}
           zone="aws-eu-central-1-1"
-          features="answers,queryImage,rephrase,filter,suggestions,autocompleteFromNERs,citations,hideResults,displayMetadata,showAttachedImages,permalink,displaySearchButton,navigateToLink,navigateToFile,navigateToOriginURL,openNewTab,persistChatHistory"
+          features="answers,queryImage,rephrase,filter,suggestions,autocompleteFromNERs,citations,hideResults,displayMetadata,showAttachedImages,permalink,displaySearchButton,navigateToLink,navigateToFile,navigateToOriginURL,openNewTab"
           filters="labels"
           rag_strategies="neighbouring_paragraphs|2|2,metadata_extension|classification_labels"
           reasoning='{"display":true,"effort":"low","budget_tokens":15000}'
