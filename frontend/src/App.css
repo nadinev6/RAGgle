@@ -138,6 +138,8 @@ body {
   background: transparent;
   transition: all 0.3s ease;
   cursor: pointer;
+  border-radius: 25px;
+  padding: 12px 16px;
 }
 
 .animated-icon-holder:hover {
