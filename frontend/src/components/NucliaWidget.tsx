@@ -41,12 +41,15 @@ const NucliaWidget: React.FC<NucliaWidgetProps> = ({ config, loading }) => {
     <div className="nuclia-widget-container">
       <div className="widget-wrapper">
         <nuclia-chat
-          audit_metadata='{"config":"nuclia-standard","widget":"e-commerce"}'
-          knowledgebox={config.knowledgebox || ''}
+          audit_metadata='{"config":"RAGgle","widget":"raggle"}'
+          knowledgebox="f3cfbf07-9e71-45e2-8648-94073a4ce56d"
           authtoken={config.authtoken || ''}
-          zone={config.zone || 'aws-eu-central-1-1'}
-          features="answers,rephrase,suggestions,autocompleteFromNERs,citations,hideResults,permalink,displaySearchButton,navigateToLink,navigateToFile,navigateToOriginURL,openNewTab,persistChatHistory"
-          rag_strategies="neighbouring_paragraphs|2|2"
+          zone="aws-eu-central-1-1"
+          features="answers,queryImage,rephrase,filter,suggestions,autocompleteFromNERs,citations,hideResults,displayMetadata,displaySearchButton,navigateToLink"
+          filters="labels"
+          rag_strategies="neighbouring_paragraphs|2|2,metadata_extension|classification_labels"
+          reasoning='{"display":true,"effort":"low","budget_tokens":15000}'
+          metadata="title, author"
           feedback="none"
         />
       </div>
