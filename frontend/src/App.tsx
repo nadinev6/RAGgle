@@ -184,6 +184,7 @@ function App() {
           generativemodel="chatgpt-azure-4o"
           citation_threshold="0.4"
           feedback="none"
+          cssPath="/nuclia-popup-styles.css"
         />
       )}
     </div>

@@ -1,0 +1,83 @@
+/* Custom styles for Nuclia search popup with animated border */
+
+/* Animated border for the popup modal */
+:host {
+  border: 2px solid;
+  border-image: linear-gradient(45deg, #007acc, #005a9e, #0099ff, #007acc) 1;
+  border-radius: 8px;
+  animation: borderPulse 3s ease-in-out infinite;
+  box-shadow: 0 0 20px rgba(0, 122, 204, 0.3);
+}
+
+/* Keyframe animation for the border */
+@keyframes borderPulse {
+  0% {
+    border-image: linear-gradient(45deg, #007acc, #005a9e, #0099ff, #007acc) 1;
+    box-shadow: 0 0 20px rgba(0, 122, 204, 0.3);
+  }
+  25% {
+    border-image: linear-gradient(45deg, #005a9e, #0099ff, #007acc, #005a9e) 1;
+    box-shadow: 0 0 25px rgba(0, 122, 204, 0.4);
+  }
+  50% {
+    border-image: linear-gradient(45deg, #0099ff, #007acc, #005a9e, #0099ff) 1;
+    box-shadow: 0 0 30px rgba(0, 122, 204, 0.5);
+  }
+  75% {
+    border-image: linear-gradient(45deg, #007acc, #005a9e, #0099ff, #007acc) 1;
+    box-shadow: 0 0 25px rgba(0, 122, 204, 0.4);
+  }
+  100% {
+    border-image: linear-gradient(45deg, #005a9e, #0099ff, #007acc, #005a9e) 1;
+    box-shadow: 0 0 20px rgba(0, 122, 204, 0.3);
+  }
+}
+
+/* Alternative simpler animation if border-image doesn't work well */
+@keyframes borderGlow {
+  0% {
+    border-color: #007acc;
+    box-shadow: 0 0 15px rgba(0, 122, 204, 0.3);
+  }
+  33% {
+    border-color: #005a9e;
+    box-shadow: 0 0 20px rgba(0, 90, 158, 0.4);
+  }
+  66% {
+    border-color: #0099ff;
+    box-shadow: 0 0 25px rgba(0, 153, 255, 0.5);
+  }
+  100% {
+    border-color: #007acc;
+    box-shadow: 0 0 15px rgba(0, 122, 204, 0.3);
+  }
+}
+
+/* Fallback for browsers that don't support border-image animation */
+@supports not (border-image: linear-gradient(45deg, #007acc, #005a9e) 1) {
+  :host {
+    border: 2px solid #007acc;
+    animation: borderGlow 3s ease-in-out infinite;
+  }
+}
+
+/* Ensure the popup content doesn't interfere with the border */
+:host > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Optional: Add a subtle inner glow effect */
+:host::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(45deg, #007acc, #005a9e, #0099ff, #007acc);
+  border-radius: 8px;
+  z-index: -1;
+  opacity: 0.1;
+  animation: borderPulse 3s ease-in-out infinite;
+}
