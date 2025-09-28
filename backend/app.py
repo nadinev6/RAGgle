@@ -96,7 +96,6 @@ def index_url():
             
         # Step 2: Retrieve the resource from Nuclia to get extracted metadata
         resource_result = indexer.get_resource_by_id(document_id)
-        extracted_details = {}
         
         if resource_result.get("success"):
             resource_data = resource_result.get("resource", {})
@@ -105,7 +104,9 @@ def index_url():
             # Flatten the Nuclia usermetadata structure
             extracted_details = indexer._flatten_nuclia_usermetadata(usermetadata)
             logger.info(f"Retrieved metadata from Nuclia for document {document_id}")
+            logger.debug(f"Extracted details: {extracted_details}")
         else:
+            extracted_details = {}
             logger.warning(f"Failed to retrieve resource {document_id} from Nuclia: {resource_result.get('error')}")
 
         # Step 3: Store the product data in Supabase
@@ -129,7 +130,11 @@ def index_url():
                 "product_url": url,
                 "last_updated": datetime.now().isoformat(),
                 "product_type": "product" if is_product_page else "generic",
-                "has_metadata": bool(extracted_details.get("imageUrl"))
+                "has_metadata": bool(
+                    extracted_details.get("name") and extracted_details.get("name") != "Unknown Product" or
+                    extracted_details.get("price") and extracted_details.get("price") != "Price not available" or
+                    extracted_details.get("imageUrl") and extracted_details.get("imageUrl") != ""
+                )
             }
 
             supabase_result = supabase.table("products").upsert(product_data, on_conflict="nuclia_document_id").execute()
