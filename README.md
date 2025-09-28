@@ -25,7 +25,7 @@ Follow these steps to get the application running on your local machine.
 
 Both the backend and frontend require Nuclia API credentials and Knowledge Base IDs.
 
-Create a `.env` file in the `ecommerce-backend/` directory with the following content:
+Create a `.env` file in the `backend/` directory with the following content:
 
 ```env
 NUCLIA_API_KEY="YOUR_NUCLIA_API_KEY"
