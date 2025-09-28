@@ -2,11 +2,37 @@
 
 This project is a custom, conversational search engine powered by Nuclia's RAG (Retrieval Augmented Generation) technology. It allows users to index content from various websites and interact with an AI-powered chat assistant to get insights about the indexed content. Users can also filter their indexed URL history by date range for better organization. The frontend is built with React and KendoReact components, while the backend is a Flask application that interfaces with the Nuclia API.
 
+## How It Works
+
+The screenshot below demonstrates how RAGgle uses cross-referenced data to answer complex questions. In this example, the AI assistant compares Charlie Kirk's most popular book with his other works by analyzing indexed content from multiple sources, providing detailed ratings, review counts, and thematic comparisons across his entire catalog.
+
+![RAGgle Chat Example](docs/example_ners.png)
+
+*Example: AI assistant comparing books by Charlie Kirk using cross-referenced data from indexed content*
+
 ## Features
 
 *   **URL Indexing**: Index content from various websites into a Nuclia Knowledge Base with date-based filtering of the indexed URL history.
 *   **AI Chat Assistant**: Integrated Nuclia chat widget for conversational queries and answers about indexed content.
 *   **Minimalist UI**: Responsive and interactive user interface built with React and KendoReact components.
+
+## Nuclia Metadata Collection
+
+Nuclia automatically extracts and classifies the following metadata from indexed content:
+
+**Document Classification Labels:**
+- `features` (metadata)
+- `availability` (metadata)
+- `name` (metadata)
+- `price` (metadata)
+- `supplier` (metadata)
+- `category` (metadata)
+- `productUrl` (metadata)
+- `imageUrl` (metadata)
+- `description` (metadata)
+- `rating` (metadata)
+
+This structured metadata enables sophisticated search capabilities and allows the AI assistant to provide detailed, contextual responses about indexed products and content.
 
 ## Prerequisites
 
